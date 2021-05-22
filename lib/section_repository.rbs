@@ -1,0 +1,4 @@
+class SectionRepository
+  def initialize: (item_parser: ApplicationParser) -> untyped
+  def find: (section_name: String) -> Array[Bookmark]
+end

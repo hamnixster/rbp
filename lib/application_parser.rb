@@ -1,0 +1,2 @@
+class ApplicationParser
+end
