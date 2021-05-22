@@ -1,5 +1,6 @@
 class LineParser < ApplicationParser
   def call(line)
-    Bookmark.new(name: "", command: nil, operation: nil)
+    command, input = line.split(" ")
+    Bookmark::Base.new(id: input, command: command)
   end
 end

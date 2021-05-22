@@ -1,14 +1,15 @@
+require "bundler/gem_tasks"
+
+require "open3"
 require "pry"
 require "rake/testtask"
 
-require "./lib/rbp"
+require "./lib/rbp/run"
 
 THEME = "flat-orange"
 
-task :run, [:section, :command] do |tsk, args|
-  Rbp.main(args.fetch(:section, "main")) do |section, lines|
-    args[:command] || Rofi.call(section, THEME, lines)
-  end
+task :run, [:command] do |tsk, args|
+  Rbp::Run.main(command: args.fetch(:command, "rbp main"))
 end
 
 Rake::TestTask.new(:test) do |t|

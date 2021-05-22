@@ -1,3 +1,0 @@
-class Rofi
-  def self.call: (String prompt, String theme, Array[String] lines) -> String
-end

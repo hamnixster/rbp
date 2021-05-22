@@ -1,9 +1,8 @@
-class Bookmark
-  def initialize(name:, command:, operation:, directory: Dir.home, tags: [])
-    @name = name
-    @command = command
-    @operation = operation
-    @directory = directory
-    @tags = tags
+require "./lib/bookmark/base"
+require "./lib/bookmark/section"
+
+module Bookmark
+  def self.type(operation)
+    Rbp::Container["config.operation_bookmark_map"].fetch(operation, ::Bookmark::Base)
   end
 end

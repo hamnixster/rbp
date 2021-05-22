@@ -1,3 +1,3 @@
-class Rbp
+class Container
   def self.main: (section: String) -> boolean
 end

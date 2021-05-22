@@ -1,3 +1,0 @@
-class LineParser
-  def call: (String line) -> Bookmark
-end
