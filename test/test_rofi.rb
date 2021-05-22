@@ -22,7 +22,7 @@ class TestRofi < Minitest::Test
     end
 
     Open3.stub :popen2, open_info do
-      assert_equal Rofi.new.call("prompt_str", "theme_name", lines), "value from rofi"
+      assert_equal Rofi.call("prompt_str", "theme_name", lines), "value from rofi"
     end
 
     stdin_mock.verify

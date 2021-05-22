@@ -7,7 +7,7 @@ THEME = "flat-orange"
 
 task :run, [:section, :command] do |tsk, args|
   Rbp.main(args.fetch(:section, "main")) do |section, lines|
-    args[:command] || Rofi.new.call(section, THEME, lines)
+    args[:command] || Rofi.call(section, THEME, lines)
   end
 end
 

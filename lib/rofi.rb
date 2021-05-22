@@ -1,5 +1,5 @@
 class Rofi
-  def call(prompt, theme, lines)
+  def self.call(prompt, theme, lines)
     opts = {
       "-dmenu" => "",
       "-p" => prompt,
