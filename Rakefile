@@ -1,13 +1,17 @@
-require "open3"
 require "pry"
+require "rake/testtask"
 
-require "./rbp"
-require "./rofi"
+require "./lib/rbp"
 
 THEME = "flat-orange"
 
 task :run, [:section, :command] do |tsk, args|
-  main(args.fetch(:section, "main")) do |section, lines|
-    args[:command] || Rofi.new.call(section, lines)
+  Rbp.main(args.fetch(:section, "main")) do |section, lines|
+    args[:command] || Rofi.new.call(section, THEME, lines)
   end
+end
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.test_files = FileList["test/**/test_*.rb"]
 end
