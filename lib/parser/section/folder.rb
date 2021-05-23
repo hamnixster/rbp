@@ -10,7 +10,9 @@ module Parser
       def call(line)
         section = Rbp::Container["parser.line"].call(line)
         location = Pathname.new(@base_folder + section.input)
-        FileUtils.mkdir_p(location.dirname)
+        FileUtils.mkdir_p(location.dirname) unless location.dirname.exist?
+        return unless location.dirname.directory?
+
         ::Bookmark::Section.new(
           section.to_s,
           Rbp::Container["parser.line"],

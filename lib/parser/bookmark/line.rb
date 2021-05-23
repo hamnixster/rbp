@@ -11,8 +11,13 @@ module Parser
           line, parser, source,
           command: command,
           input: input,
-          location: directory
-        ).tap { |bm| bm.set_operation(command) }
+          location: Pathname.new(File.join(directory, input || "")),
+          directory: Pathname.new(File.join(directory, input || "")).dirname
+        ).tap do |bm|
+          if Rbp::Container.key?("operation.#{command}")
+            bm.operation = Rbp::Container["operation.#{command}"]
+          end
+        end
       end
     end
   end

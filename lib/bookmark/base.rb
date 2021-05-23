@@ -1,6 +1,6 @@
 module Bookmark
   class Base
-    attr_reader :id, :input
+    attr_reader :id, :input, :directory, :operation
 
     def initialize(
       id, parser, source,
@@ -14,13 +14,13 @@ module Bookmark
       @id = id
       @parser = parser
       @command = command
-      @location = location
       @operation = operation
       @input = input
 
       @directory = directory
       @tags = tags
 
+      @location = location || Pathname.new(File.join(directory, input))
       @source = source.new(location || input)
     end
 
@@ -33,17 +33,15 @@ module Bookmark
     end
 
     def execute
-      @operation.call(self) if @operation
+      @operation&.call(self)
     end
 
-    def set_operation(command)
-      if Rbp::Container.key?("operation.#{command}")
-        @operation = Rbp::Container["operation.#{command}"]
-        @location = @operation.location(@input) if @input
-        @parser = @operation.parser
-        @source = @operation.source(@location)
-        @command = command
-      end
+    def operation=(operation)
+      @operation = operation
+      @location = (@input && @operation.location(@input, location: @location)) || @location
+      @parser = @operation.parser(@input, @directory)
+      @source = @operation.source(@location)
+      @command = operation.command
     end
   end
 end

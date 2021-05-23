@@ -25,9 +25,9 @@ Rbp::Container.register("source.file", Source::File)
 Rbp::Container.register("source.literal", Source::Literal)
 
 Rbp::Container.register("parser.line", Parser::Bookmark::Line.new)
-Rbp::Container.register("parser.section.folder", Parser::Section::Folder.new(BASE))
+Rbp::Container.register("parser.section.folder.base", Parser::Section::Folder.new(BASE))
 
-Rbp::Container.register("operation.rbp", Operation::Rbp.new)
+Rbp::Container.register("operation.rbp", Operation::Rbp.new("rbp"))
 
 Rbp::Container.register(
   "config.operation_bookmark_map",
@@ -35,9 +35,9 @@ Rbp::Container.register(
 )
 
 Rbp::Container.register(
-  "repository.section.folder",
+  "repository.section.folder.base",
   Repository::Section.new(
-    Rbp::Container["parser.section.folder"],
+    Rbp::Container["parser.section.folder.base"],
     Rbp::Container["source.file"],
     directory: BASE,
     location: "#{BASE}/sections"
