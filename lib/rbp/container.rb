@@ -26,11 +26,6 @@ Rbp::Container.register("parser.line", Parser::Bookmark::Line.new)
 Rbp::Container.register("operation.rbp", Operation::Rbp.new("rbp"))
 
 Rbp::Container.register(
-  "config.operation_bookmark_map",
-  {"rbp" => ::Bookmark::Section}
-)
-
-Rbp::Container.register(
   "main-section",
   Bookmark::Section.new(
     "rbp main",

@@ -18,7 +18,7 @@ module Parser
           (input && operation.location(input))
         source ||= operation&.source(location) || Rbp::Container["source.literal"].new(location)
 
-        ::Bookmark.type(command).new(
+        operation.bookmark_class.new(
           line, parser, source,
           command: command,
           input: input,

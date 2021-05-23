@@ -20,5 +20,9 @@ module Operation
     def source(location)
       ::Rbp::Container["source.file"].new(location)
     end
+
+    def bookmark_class
+      ::Bookmark::Section
+    end
   end
 end
