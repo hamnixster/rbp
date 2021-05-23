@@ -1,23 +1,30 @@
 module Parser
   module Bookmark
     class Line
-      def call(line, directory: BASE)
+      def call(line, hosting_section: nil, directory: nil)
+        return if line.strip.empty?
         command, input = line.split(" ")
+        input ||= ""
 
-        parser = Rbp::Container["parser.line"]
-        source = Rbp::Container["source.literal"]
+        if Rbp::Container.key?("operation.#{command}")
+          operation = Rbp::Container["operation.#{command}"]
+          parser = operation.parser
+          command = operation.command
+        else
+          parser = Rbp::Container["parser.line"]
+          operation = nil
+        end
+        location = Pathname.new(File.join(directory || hosting_section.location.dirname, input || "")) ||
+          (input && operation.location(input))
+        source ||= operation&.source(location) || Rbp::Container["source.literal"].new(location)
 
         ::Bookmark.type(command).new(
           line, parser, source,
           command: command,
           input: input,
-          location: Pathname.new(File.join(directory, input || "")),
-          directory: Pathname.new(File.join(directory, input || "")).dirname
-        ).tap do |bm|
-          if Rbp::Container.key?("operation.#{command}")
-            bm.operation = Rbp::Container["operation.#{command}"]
-          end
-        end
+          location: location,
+          operation: operation
+        )
       end
     end
   end

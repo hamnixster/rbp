@@ -21,7 +21,7 @@ module Repository
     private
 
     def entries
-      @entries ||= @source.all.map { |id| @parser.call(id) }
+      @entries ||= @source.all.map { |id| @parser.call(id) unless id.empty? }.compact
     end
   end
 end

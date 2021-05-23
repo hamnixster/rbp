@@ -4,6 +4,7 @@ require "open3"
 require "pry"
 require "rake/testtask"
 
+BASE = File.expand_path("~/.cache/rbp/")
 require "./lib/rbp/run"
 
 THEME = "flat-orange"

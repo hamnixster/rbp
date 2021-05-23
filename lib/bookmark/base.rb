@@ -1,6 +1,6 @@
 module Bookmark
   class Base
-    attr_reader :id, :input, :directory, :operation
+    attr_reader :id, :input, :operation, :source, :location
 
     def initialize(
       id, parser, source,
@@ -8,20 +8,19 @@ module Bookmark
       command: nil,
       input: nil,
       operation: nil,
-      directory: BASE,
       tags: []
     )
       @id = id
       @parser = parser
+      @source = source
+
       @command = command
       @operation = operation
       @input = input
 
-      @directory = directory
       @tags = tags
 
       @location = location || Pathname.new(File.join(directory, input))
-      @source = source.new(location || input)
     end
 
     def all
@@ -32,6 +31,10 @@ module Bookmark
       id
     end
 
+    def directory
+      @location.dirname
+    end
+
     def execute
       @operation&.call(self)
     end
@@ -39,7 +42,7 @@ module Bookmark
     def operation=(operation)
       @operation = operation
       @location = (@input && @operation.location(@input, location: @location)) || @location
-      @parser = @operation.parser(@input, @directory)
+      @parser = @operation.parser
       @source = @operation.source(@location)
       @command = operation.command
     end

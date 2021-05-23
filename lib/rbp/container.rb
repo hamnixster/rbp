@@ -11,8 +11,6 @@ require "./lib/repository"
 require "./lib/operation"
 require "./lib/source"
 
-BASE = File.expand_path("~/.cache/rbp/")
-
 module Rbp
   class Container < Dry::System::Container
     configure do |config|
@@ -25,7 +23,6 @@ Rbp::Container.register("source.file", Source::File)
 Rbp::Container.register("source.literal", Source::Literal)
 
 Rbp::Container.register("parser.line", Parser::Bookmark::Line.new)
-Rbp::Container.register("parser.section.folder.base", Parser::Section::Folder.new(BASE))
 
 Rbp::Container.register("operation.rbp", Operation::Rbp.new("rbp"))
 
@@ -36,10 +33,10 @@ Rbp::Container.register(
 
 Rbp::Container.register(
   "repository.section.folder.base",
-  Repository::Section.new(
-    Rbp::Container["parser.section.folder.base"],
-    Rbp::Container["source.file"],
-    directory: BASE,
-    location: "#{BASE}/sections"
+  Bookmark::Section.new(
+    "rbp main",
+    Rbp::Container["parser.line"],
+    Rbp::Container["source.file"].new(Pathname.new("#{BASE}/main")),
+    location: Pathname.new("#{BASE}/main")
   )
 )
