@@ -19,7 +19,10 @@ module Bookmark
     private
 
     def entries
-      @entries ||= @source.tap { |s| s.try_touch }.all.map { |id| @parser.call(id, hosting_section: self) }.compact
+      @entries ||=
+        @source.tap { |s| s.try_touch }
+          .all.map { |id| @parser.call(id, hosting_section: self) }
+          .compact
     end
   end
 end

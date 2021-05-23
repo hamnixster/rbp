@@ -9,8 +9,8 @@ require "./lib/rbp/run"
 
 THEME = "flat-orange"
 
-task :run, [:command] do |tsk, args|
-  Rbp::Run.main(command: args.fetch(:command, "rbp main"))
+task :run do |tsk, args|
+  Rbp::Run.main
 end
 
 Rake::TestTask.new(:test) do |t|

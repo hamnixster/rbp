@@ -14,7 +14,7 @@ module Parser
           parser = Rbp::Container["parser.line"]
           operation = nil
         end
-        location = Pathname.new(File.join(directory || hosting_section.location.dirname, input || "")) ||
+        location = Pathname.new(File.join(directory || hosting_section&.location&.dirname || "", input || "")) ||
           (input && operation.location(input))
         source ||= operation&.source(location) || Rbp::Container["source.literal"].new(location)
 

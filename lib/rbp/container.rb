@@ -7,7 +7,6 @@ require "./lib/rofi"
 
 require "./lib/bookmark"
 require "./lib/parser"
-require "./lib/repository"
 require "./lib/operation"
 require "./lib/source"
 
@@ -32,11 +31,12 @@ Rbp::Container.register(
 )
 
 Rbp::Container.register(
-  "repository.section.folder.base",
+  "main-section",
   Bookmark::Section.new(
     "rbp main",
     Rbp::Container["parser.line"],
     Rbp::Container["source.file"].new(Pathname.new("#{BASE}/main")),
-    location: Pathname.new("#{BASE}/main")
+    location: Pathname.new("#{BASE}/main"),
+    operation: Rbp::Container["operation.rbp"]
   )
 )
