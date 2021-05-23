@@ -22,16 +22,3 @@ Rbp::Container.register("source.file", Source::File)
 Rbp::Container.register("source.literal", Source::Literal)
 
 Rbp::Container.register("parser.line", Parser::Bookmark::Line.new)
-
-Rbp::Container.register("operation.rbp", Operation::Rbp.new("rbp"))
-
-Rbp::Container.register(
-  "main-section",
-  Bookmark::Section.new(
-    "rbp main",
-    Rbp::Container["parser.line"],
-    Rbp::Container["source.file"].new(Pathname.new("#{BASE}/main")),
-    location: Pathname.new("#{BASE}/main"),
-    operation: Rbp::Container["operation.rbp"]
-  )
-)

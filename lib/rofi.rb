@@ -1,8 +1,9 @@
 class Rofi
-  def self.call(prompt, theme, lines)
+  def self.call(prompt, lines, theme: THEME, mesg: nil)
     opts = {
       "-dmenu" => "",
       "-p" => prompt,
+      "-mesg" => mesg,
       "-theme" => theme
     }.reject { |_, v| v.nil? }.to_a.flatten.reject(&:empty?)
 

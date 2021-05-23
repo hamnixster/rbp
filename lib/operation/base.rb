@@ -4,17 +4,10 @@ module Operation
 
     def initialize(command)
       @command = command
+      ::Rbp::Container.register("operation.#{command}", self)
     end
 
-    def parser
-      nil
-    end
-
-    def source
-      nil
-    end
-
-    def location(*_args, **_kwargs)
+    def bookmark_type
       nil
     end
   end

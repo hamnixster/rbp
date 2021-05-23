@@ -1,10 +1,9 @@
 module Bookmark
   class Base
-    attr_reader :id, :input, :operation, :source, :location
+    attr_reader :id, :input, :operation, :source, :notices, :command, :parser
 
     def initialize(
       id, parser, source,
-      location: nil,
       command: nil,
       input: nil,
       operation: nil,
@@ -20,15 +19,29 @@ module Bookmark
 
       @tags = tags
 
-      @location = location || Pathname.new(File.join(directory, input))
+      @notices = []
     end
 
     def all
       []
     end
 
-    def to_s
-      id
+    # not sure this should work unless we are folder backed
+    def to_s(parent: nil, child: nil)
+      input =
+        if parent.nil?
+          @input
+        elsif parent.zero?
+          @input.split("/").last
+        else
+          ("../" * parent) + @input.gsub(/\.\.\//, "")
+        end
+      if child && !child.zero?
+        input =
+          location.to_s.reverse.split("/")[1..child]
+            .map(&:reverse).reverse.join("/") + "/" + input.split("/").last
+      end
+      [@command, input].join(" ")
     end
 
     def directory
@@ -39,12 +52,8 @@ module Bookmark
       @operation&.call(self)
     end
 
-    def operation=(operation)
-      @operation = operation
-      @location = (@input && @operation.location(@input, location: @location)) || @location
-      @parser = @operation.parser
-      @source = @operation.source(@location)
-      @command = operation.command
+    def valid?
+      source&.try_touch && parser && operation && true
     end
   end
 end

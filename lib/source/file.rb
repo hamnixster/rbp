@@ -1,16 +1,19 @@
 module Source
   class File < Base
-    def initialize(input)
-      @input = input
+    def initialize(input, hosting_section: nil)
+      input = ::File.join(hosting_section&.location&.dirname || "", input || "")
+      @input = Pathname.new(input).cleanpath
     end
 
     def call(**kwargs)
-      try_touch if kwargs[:try_create]
-      ::File.open(@input) if exist?
+      ::File.open(@input).read if exist?
+    rescue => e
+      ::Rbp::Container["operation.rbp.messages"] << e.message
+      nil
     end
 
     def all
-      call&.read&.split("\n")&.sort&.uniq&.map(&:strip)&.reject(&:empty?) || []
+      call&.split("\n")&.sort&.uniq&.map(&:strip)&.reject(&:empty?) || []
     end
 
     def exist?
@@ -23,20 +26,25 @@ module Source
           f << line.strip + "\n"
         end
       end
+    rescue => e
+      ::Rbp::Container["operation.rbp.messages"] << e.message
+      nil
     end
 
     def try_touch
-      try_mkdir_p
+      return unless try_mkdir_p
       FileUtils.touch(@input)
+      ::Rbp::Container["operation.rbp.messages"] << "#{@input} is not a file" unless Pathname.new(@input).file?
+      Pathname.new(@input).file?
     rescue => e
-      puts e
+      ::Rbp::Container["operation.rbp.messages"] << e.message
       nil
     end
 
     def try_mkdir_p
       FileUtils.mkdir_p(Pathname.new(@input).dirname)
     rescue => e
-      puts e
+      ::Rbp::Container["operation.rbp.messages"] << e.message
       nil
     end
   end
