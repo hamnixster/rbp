@@ -7,7 +7,8 @@ module Bookmark
       command: nil,
       input: nil,
       operation: nil,
-      tags: []
+      tags: [],
+      options: {}
     )
       @id = id
       @parser = parser
@@ -19,8 +20,7 @@ module Bookmark
       @input = input
 
       @tags = tags
-
-      @notices = []
+      @options = options
     end
 
     def all
@@ -46,6 +46,7 @@ module Bookmark
     end
 
     def execute(**kwargs)
+      Dir.chdir(source.dirname)
       @operation&.call(self, **kwargs)
     end
 

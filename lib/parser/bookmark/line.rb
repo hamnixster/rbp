@@ -80,7 +80,8 @@ module Parser
           line, parser, source, hosting_section,
           command: command,
           input: input,
-          operation: operation
+          operation: operation,
+          options: options
         )
       end
 

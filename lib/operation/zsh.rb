@@ -2,8 +2,7 @@ module Operation
   class Zsh < Base
     # return value here needs to indicate success/failure, should save, and next bm
     def call(bookmark, hosting_section: nil)
-      pre, shell = command_str(bookmark)
-      out, err, status = Open3.capture3(pre.join("; ") + "; " + shell)
+      out, err, status = Open3.capture3("zsh", "-c", *bookmark.input.strip)
       ::Rbp::Container["operation.rbp.messages"] << "𝝀    : " + bookmark.input
       ::Rbp::Container["operation.rbp.messages"] << "🙟 :"
       if status.success?
@@ -15,13 +14,8 @@ module Operation
       end
     end
 
-    def command_str(bookmark)
-      dirname = bookmark&.source&.dirname
-      dirname ? Dir.chdir(dirname.to_s) : nil
-      [
-        ["zsh_command=(#{'"' + bookmark.input.strip.gsub(/\s+/, '" "') + '"'})"],
-        "zsh -c ${zsh_command[*]}"
-      ]
+    def wrapped_opts(bookmark, opts)
+      [opts.first, "zsh", "-c", *bookmark.input.strip].each { |opt| opts << opt }
     end
   end
 end
