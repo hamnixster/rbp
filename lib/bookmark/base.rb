@@ -1,9 +1,9 @@
 module Bookmark
   class Base
-    attr_reader :id, :input, :operation, :source, :notices, :command, :parser
+    attr_reader :id, :input, :operation, :source, :notices, :command, :parser, :hosting_section
 
     def initialize(
-      id, parser, source,
+      id, parser, source, hosting_section,
       command: nil,
       input: nil,
       operation: nil,
@@ -12,6 +12,7 @@ module Bookmark
       @id = id
       @parser = parser
       @source = source
+      @hosting_section = hosting_section
 
       @command = command
       @operation = operation

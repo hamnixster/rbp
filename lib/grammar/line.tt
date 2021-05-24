@@ -20,7 +20,7 @@ grammar Line
   end
 
   rule section
-    'st' / 't'
+    'st' / 't' / 'w'
   end
 
   rule string

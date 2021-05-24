@@ -1,8 +1,8 @@
 module Operation
   class Rbp < Base
-    def initialize(command)
-      super
+    def self.register(command)
       ::Rbp::Container.register("operation.#{command}.messages", [])
+      super
     end
 
     def call(section, **kwargs)

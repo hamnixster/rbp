@@ -2,9 +2,14 @@ module Operation
   class Base
     attr_reader :command
 
-    def initialize(command)
+    def self.register(command)
+      instance = new(command)
+      ::Rbp::Container.register("operation.#{command}", instance)
+      instance
+    end
+
+    def initialize(command, **kwargs)
       @command = command
-      ::Rbp::Container.register("operation.#{command}", self)
     end
 
     def bookmark_type

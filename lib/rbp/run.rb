@@ -9,6 +9,7 @@ module Rbp
           "rbp main",
           Rbp::Container["parser.line"],
           Rbp::Container["source.file"].new(Pathname.new("#{BASE}/main")),
+          nil,
           operation: Rbp::Container["operation.rbp"],
           input: "main",
           command: "rbp"

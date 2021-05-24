@@ -42,8 +42,11 @@ module Parser
             {}
           end
 
+        options = options.map { |k, v| [k.to_sym, v] }.to_h
+
         if (string = result.elements.find { |e| e.respond_to?(:string) }&.string)
           input = string.text_value[1...-1]
+          input.gsub!(/\\"/, '"')
         end
 
         source_type =
@@ -64,12 +67,9 @@ module Parser
         # try parse the parser, for now always line
         parser ||= Rbp::Container["parser.line"]
 
-        if Rbp::Container.key?("operation.#{command}")
-          operation = Rbp::Container["operation.#{command}"]
-          command = operation.command
-        else
-          operation = nil
-        end
+        operation = get_operation(command, options)
+
+        command = operation.command
 
         bookmark_type = operation&.bookmark_type || ::Bookmark::Base
 
@@ -77,11 +77,22 @@ module Parser
 
         return unless operation
         bookmark_type.new(
-          line, parser, source,
+          line, parser, source, hosting_section,
           command: command,
           input: input,
           operation: operation
         )
+      end
+
+      def get_operation(command, options)
+        if Rbp::Container.key?("operation.#{command}")
+          if Rbp::Container["operation.#{command}"].is_a?(Class)
+            options[:w] = get_operation(options[:w], options.except(:w)) if options[:w]
+            Rbp::Container["operation.#{command}"].new(command, **options)
+          else
+            Rbp::Container["operation.#{command}"]
+          end
+        end
       end
     end
   end

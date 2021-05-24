@@ -12,8 +12,9 @@ require "./lib/rbp/run"
 THEME = "flat-orange"
 
 task :run do |tsk, args|
-  Operation::Rbp.new("rbp")
-  Operation::Zsh.new("zsh")
+  Operation::Rbp.register("rbp")
+  Operation::Zsh.register("zsh")
+  Operation::Urxvt.register("urxvt")
 
   Rbp::Run.main
 end
