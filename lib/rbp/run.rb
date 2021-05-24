@@ -17,7 +17,10 @@ module Rbp
 
       Rbp::Container["main-section"].source.try_touch
       next_section = Rbp::Container["main-section"]
-      loop { next_section, _ = next_section&.execute }
+      loop do
+        next_section, _ = next_section&.execute
+        break unless next_section
+      end
     end
   end
 end

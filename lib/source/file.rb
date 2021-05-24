@@ -33,9 +33,10 @@ module Source
 
     def remove(line)
       if exist?
-        File.open(@input, "w") do |out_file|
-          File.foreach(@input) do |fl|
-            out_file.puts fl unless fl == line
+        out_lines = ::File.read(@input).split("\n").reject { |l| l == line }
+        ::File.open(@input, "w") do |out_file|
+          out_lines.each do |fl|
+            out_file.puts fl
           end
         end
       end

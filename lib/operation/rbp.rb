@@ -28,13 +28,7 @@ module Operation
 
         next_section, save = selection.execute(hosting_section: section)
 
-        unless save
-          if selection.operation.instance_of?(self.class) && selection.id != section.id
-            try_remove_links(section, selection)
-          else
-            section.remove(selection.to_s)
-          end
-        end
+        section.remove(selection.to_s) unless save
         [next_section, save]
       elsif !command.empty?
         ::Rbp::Container["operation.rbp.messages"] << "Command (#{command}) failed."
