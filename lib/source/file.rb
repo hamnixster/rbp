@@ -1,8 +1,12 @@
 module Source
   class File < Base
-    def initialize(input, hosting_section: nil)
-      input = ::File.join(hosting_section&.source&.input&.dirname || "", input || "")
+    def initialize(input, hosting_section: nil, **kwargs)
+      input = ::File.join(hosting_section&.source&.dirname || "", input || "")
       @input = Pathname.new(input).cleanpath
+    end
+
+    def dirname
+      @input.dirname
     end
 
     def call(**kwargs)

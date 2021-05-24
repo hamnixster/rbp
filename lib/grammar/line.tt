@@ -1,0 +1,29 @@
+grammar Line
+  rule line
+    command ( string [ \n]+ )? next_option
+  end
+
+  rule word
+    ( ![ \t] . )+ ([ \t]+ / !.)
+  end
+
+  rule command
+    word
+  end
+
+  rule option
+    '-' section [ \t] next_option
+  end
+
+  rule next_option
+    (option / word)+ / (string ( next_option )? )
+  end
+
+  rule section
+    'st' / 't'
+  end
+
+  rule string
+    '"' ('\"' / !'"' .)* '"'
+  end
+end
