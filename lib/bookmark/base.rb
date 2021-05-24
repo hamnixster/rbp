@@ -38,18 +38,14 @@ module Bookmark
         end
       if child && !child.zero?
         input =
-          location.to_s.reverse.split("/")[1..child]
+          source.input.to_s.reverse.split("/")[1..child]
             .map(&:reverse).reverse.join("/") + "/" + input.split("/").last
       end
       [@command, input].join(" ")
     end
 
-    def directory
-      @location.dirname
-    end
-
-    def execute
-      @operation&.call(self)
+    def execute(**kwargs)
+      @operation&.call(self, **kwargs)
     end
 
     def valid?

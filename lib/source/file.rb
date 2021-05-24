@@ -1,7 +1,7 @@
 module Source
   class File < Base
     def initialize(input, hosting_section: nil)
-      input = ::File.join(hosting_section&.location&.dirname || "", input || "")
+      input = ::File.join(hosting_section&.source&.input&.dirname || "", input || "")
       @input = Pathname.new(input).cleanpath
     end
 
@@ -24,6 +24,19 @@ module Source
       if exist?
         ::File.open(@input, "a") do |f|
           f << line.strip + "\n"
+        end
+      end
+    rescue => e
+      ::Rbp::Container["operation.rbp.messages"] << e.message
+      nil
+    end
+
+    def remove(line)
+      if exist?
+        File.open(@input, "w") do |out_file|
+          File.foreach(@input) do |fl|
+            out_file.puts fl unless fl == line
+          end
         end
       end
     rescue => e

@@ -13,6 +13,7 @@ THEME = "flat-orange"
 
 task :run do |tsk, args|
   Operation::Rbp.new("rbp")
+  Operation::Zsh.new("zsh")
 
   Rbp::Run.main
 end

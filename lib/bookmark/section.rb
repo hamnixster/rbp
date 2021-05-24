@@ -12,11 +12,16 @@ module Bookmark
     # if source is a file source
     def find_or_create(id)
       find(id) ||
-        (
+        begin
+          parsed = @parser.call(id, hosting_section: self)
+
           @source << id
           @entries = nil
-          @parser.call(id, hosting_section: self)
-        )
+        end
+    end
+
+    def remove(id)
+      @source.remove(id)
     end
 
     private
