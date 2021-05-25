@@ -47,6 +47,7 @@ module RbpParser
         if (string = result.elements.find { |e| e.respond_to?(:string) }&.string)
           input = string.text_value[1...-1]
           input.gsub!(/\\"/, '"')
+        # This is the case that the only provided element is quoted
         elsif result.elements.count == 3 &&
               (string = result.elements.last) &&
               [string.text_value[0], string.text_value[-1]].all? { |q| q == "\""}

@@ -67,7 +67,7 @@ module Operation
       ::Rbp::Container["operation.rbp.messages"] << "  " + out.gsub(/\n/, "\n  ").delete("<").delete(">") + "\n"
       ::Rbp::Container["operation.rbp.messages"] << "\n\n"
       ::Rbp::Container["operation.rbp.messages"] << "  " + err.gsub(/\n/, "\n  ").delete("<").delete(">") + "\n"
-      if status.success? && !out.empty?
+      if status.success?
         [hosting_section, true]
       else
         [hosting_section, time > 0.5]

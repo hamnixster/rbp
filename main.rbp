@@ -5,3 +5,4 @@ zsh pwd
 zsh nvim main.rbp -w urxvt
 be rake standard -w urxvt
 be rake standard
+zsh cloc ./
