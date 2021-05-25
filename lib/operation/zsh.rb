@@ -9,7 +9,6 @@ module Operation
       @command = command
     end
 
-    # return value here needs to indicate success/failure, should save, and next bm
     def call(bookmark, hosting_section: nil, opts: nil, wrapped: false)
       if @wrapped_operation
         @wrapped_operation.call(
@@ -17,14 +16,22 @@ module Operation
           hosting_section: hosting_section,
           opts: wrapped_opts(bookmark)
         ) do |out, err, status, time|
-          handle_output(out, err, status, time, hosting_section, bookmark)
+          if block_given?
+            yield(out, err, status, time, hosting_section, bookmark)
+          else
+            handle_output(out, err, status, time, hosting_section, bookmark)
+          end
         end
       else
         out, err, status, time = run_command(opts, bookmark)
         if wrapped
           yield(out, err, status, time)
         else
-          handle_output(out, err, status, time, hosting_section, bookmark)
+          if block_given?
+            yield(out, err, status, time, hosting_section, bookmark)
+          else
+            handle_output(out, err, status, time, hosting_section, bookmark)
+          end
         end
       end
     end
@@ -33,18 +40,18 @@ module Operation
       if status.success? && !out.empty?
         ::Rbp::Container["operation.rbp.messages"] << "𝝀    : " + bookmark.input
         ::Rbp::Container["operation.rbp.messages"] << "🙟 :"
-        ::Rbp::Container["operation.rbp.messages"] << "  " + out.gsub(/\n/, "\n  ") + "\n"
+        ::Rbp::Container["operation.rbp.messages"] << "  " + out.gsub(/\n/, "\n  ").delete("<").delete(">") + "\n"
         [hosting_section, true]
       elsif status.success?
         [hosting_section, true]
       else
-        ::Rbp::Container["operation.rbp.messages"] << err
+        ::Rbp::Container["operation.rbp.messages"] << err.delete("<").delete(">")
         [hosting_section, false]
       end
     end
 
-    def wrapped_opts(bookmark)
-      ["zsh", "-c", *bookmark.input.strip + "; $SHELL"]
+    def wrapped_opts(bookmark, opts = nil, wrapped: false)
+      ["zsh", "-c", (opts || [bookmark.input.strip]).join(" ") + "; $SHELL"]
     end
 
     private

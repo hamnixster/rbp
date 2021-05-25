@@ -6,7 +6,7 @@ require "pathname"
 require "./lib/rofi"
 
 require "./lib/bookmark"
-require "./lib/parser"
+require "./lib/rbp_parser"
 require "./lib/operation"
 require "./lib/source"
 
@@ -21,4 +21,4 @@ end
 Rbp::Container.register("source.file", Source::File)
 Rbp::Container.register("source.literal", Source::Literal)
 
-Rbp::Container.register("parser.line", Parser::Bookmark::Line.new)
+Rbp::Container.register("parser.line", RbpParser::Bookmark::Line.new)

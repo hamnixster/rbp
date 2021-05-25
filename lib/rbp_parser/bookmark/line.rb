@@ -2,7 +2,7 @@ require "polyglot"
 require "treetop"
 Treetop.load "./lib/grammar/line"
 
-module Parser
+module RbpParser
   module Bookmark
     class Line
       def parse_options(option, options: {})
@@ -45,6 +45,11 @@ module Parser
         options = options.map { |k, v| [k.to_sym, v] }.to_h
 
         if (string = result.elements.find { |e| e.respond_to?(:string) }&.string)
+          input = string.text_value[1...-1]
+          input.gsub!(/\\"/, '"')
+        elsif result.elements.count == 3 &&
+              (string = result.elements.last) &&
+              [string.text_value[0], string.text_value[-1]].all? { |q| q == "\""}
           input = string.text_value[1...-1]
           input.gsub!(/\\"/, '"')
         end

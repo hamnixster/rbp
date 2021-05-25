@@ -16,6 +16,7 @@ module Operation
       if messages.length > 20
         messages = messages[...20]
         messages << "... output truncated"
+        messages << ""
       end
       messages << ""
       messages = messages.join("\n")
@@ -59,7 +60,7 @@ module Operation
     # file source dependent??
     def try_create_links(hosting_section, new_section)
       return unless hosting_section.source.instance_of?(Source::File) &&
-                    new_section.source.instance_of?(Source::File)
+        new_section.source.instance_of?(Source::File)
       # if we're in the same directory, try to create bookmarks in both the
       # hosting section and the new rbp new_section
       if hosting_section.source.dirname == new_section.source.dirname

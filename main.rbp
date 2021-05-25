@@ -1,0 +1,7 @@
+zsh ls
+be rake -T
+zsh nvim Gemfile -w urxvt
+zsh pwd
+zsh nvim main.rbp -w urxvt
+be rake standard -w urxvt
+be rake standard

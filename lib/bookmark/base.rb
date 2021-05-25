@@ -62,9 +62,8 @@ module Bookmark
       input_str ||= input
 
       options = @options.map { |k, v| "-#{k} #{v}" }.join(" ")
-      output = [@command, input_str, options].join(" ").strip
+      [@command, input_str, options].join(" ").strip
       # puts "#{child} #{parent} #{output}"
-      output
     end
 
     def execute(**kwargs)

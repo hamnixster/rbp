@@ -16,7 +16,7 @@ grammar Line
   end
 
   rule next_option
-    (option / word)+ / (string ( next_option )? )
+    ( (option / word)+ / (string ( next_option )? ) / !.)
   end
 
   rule section

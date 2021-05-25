@@ -25,6 +25,7 @@ module Operation
         final_opts = ["-e", *(opts || bookmark.input.strip)]
 
         now = Time.now
+        puts "urxvt #{final_opts}"
         out, err, status = Open3.capture3(ENV, "urxvt", *final_opts)
         time ||= Time.now - now
 
@@ -40,14 +41,12 @@ module Operation
       if status.success? && (time ||= Time.now - now) > 5
         [nil, true]
       else
-        ::Rbp::Container["operation.rbp.messages"] << out
-        ::Rbp::Container["operation.rbp.messages"] << err
         [hosting_section, time > 0.5]
       end
     end
 
     def wrapped_opts(bookmark, opts = nil)
-      ["urxvt", "-e", *(opts || bookmark.input.strip)]
+      ["urxvt", "-e", *(opts || [bookmark.input.strip])]
     end
   end
 end
