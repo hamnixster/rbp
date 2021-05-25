@@ -12,16 +12,22 @@ module Operation
         ""
       ]
       messages = messages.concat(::Rbp::Container["operation.#{@command}.messages"])
+      messages = messages.map { |m| m.split("\n") }.flatten
+      if messages.length > 20
+        messages = messages[...20]
+        messages << "... output truncated"
+      end
+      messages << ""
       messages = messages.join("\n")
       ::Rbp::Container["operation.#{@command}.messages"].filter! { false }
 
-      command = Rofi.call(
-        section.command + " " + section.source.input.to_s.split("/").last,
+      selection_str = Rofi.call(
+        section.input.to_s.split("/").last,
         section.all.reject { |s| s.id == section.id },
         mesg: (messages unless messages.empty?)
       )
       selection = section.parser.call(
-        command,
+        selection_str,
         hosting_section: section
       )
 
@@ -36,8 +42,8 @@ module Operation
 
         section.remove(selection.to_s) unless save
         [next_section, true]
-      elsif !command.empty?
-        ::Rbp::Container["operation.rbp.messages"] << "Command (#{command}) failed."
+      elsif !selection_str.empty?
+        ::Rbp::Container["operation.rbp.messages"] << "Command (#{selection_str}) failed."
         section.execute
       else
         [nil, nil]

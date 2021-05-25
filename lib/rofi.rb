@@ -8,7 +8,7 @@ class Rofi
     }.reject { |_, v| v.nil? }.to_a.flatten.reject(&:empty?)
 
     selection = Open3.popen2(ENV, "rofi", *opts) { |stdin, stdout|
-      lines.each { |l| stdin.puts(l) }
+      lines.each { |l| stdin.puts(l.to_s.strip) }
       stdin.close
       stdout.read
     }

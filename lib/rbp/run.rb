@@ -8,10 +8,9 @@ module Rbp
         Bookmark::Section.new(
           "rbp main",
           Rbp::Container["parser.line"],
-          Rbp::Container["source.file"].new(Pathname.new("#{BASE}/main")),
+          Rbp::Container["source.file"].new(Pathname.new("#{BASE}/main.rbp")),
           nil,
           operation: Rbp::Container["operation.rbp"],
-          input: "main",
           command: "rbp"
         )
       )

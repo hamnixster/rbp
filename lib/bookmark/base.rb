@@ -1,11 +1,10 @@
 module Bookmark
   class Base
-    attr_reader :id, :input, :operation, :source, :notices, :command, :parser, :hosting_section
+    attr_reader :id, :operation, :source, :notices, :command, :parser, :hosting_section
 
     def initialize(
       id, parser, source, hosting_section,
       command: nil,
-      input: nil,
       operation: nil,
       tags: [],
       options: {}
@@ -17,7 +16,6 @@ module Bookmark
 
       @command = command
       @operation = operation
-      @input = input
 
       @tags = tags
       @options = options
@@ -27,22 +25,46 @@ module Bookmark
       []
     end
 
+    def input
+      @input = source.input.to_s
+    end
+
     # not sure this should work unless we are folder backed
     def to_s(parent: nil, child: nil)
-      input =
-        if parent.nil?
-          @input
-        elsif parent.zero?
-          @input.split("/").last
-        else
-          ("../" * parent) + @input.gsub(/\.\.\//, "")
+      if source.input.instance_of?(Pathname)
+
+        if @hosting_section&.source&.input&.dirname == source.input.dirname
+          parent ||= 0
+          child ||= 0
+        elsif @hosting_section
+          parent ||= @hosting_section.source.input.dirname.ascend.to_a.index { |i| i.to_s == source.input.dirname.to_s }
+          child ||= source.input.dirname.ascend.to_a.index { |i| i.to_s == @hosting_section.source.input.dirname.to_s }
+          parent ||= 0
+          child ||= 0
         end
-      if child && !child.zero?
-        input =
-          source.input.to_s.reverse.split("/")[1..child]
-            .map(&:reverse).reverse.join("/") + "/" + input.split("/").last
+        input_str =
+          if parent.nil?
+            input
+          elsif parent.zero?
+            input.split("/").last
+          else
+            ("../" * parent) + input.gsub(/\.\.\//, "").split("/").last
+          end
+        if child && !child.zero?
+          input_str =
+            input.to_s.reverse.split("/")[1..child]
+              .map(&:reverse).reverse.join("/") + "/" + input_str.split("/").last
+        end
+
+        input_str = input_str.sub(/\.rbp$/, "")
       end
-      [@command, input].join(" ")
+
+      input_str ||= input
+
+      options = @options.map { |k, v| "-#{k} #{v}" }.join(" ")
+      output = [@command, input_str, options].join(" ").strip
+      # puts "#{child} #{parent} #{output}"
+      output
     end
 
     def execute(**kwargs)
@@ -52,6 +74,10 @@ module Bookmark
 
     def valid?
       source&.try_touch && parser && operation && true
+    end
+
+    def ==(other)
+      id.strip == other.id.strip && source.input.to_s.strip == other.source.input.to_s.strip
     end
   end
 end

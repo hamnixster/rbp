@@ -10,8 +10,6 @@ module Bookmark
 
     # need to prevent accidentally writing into non-rbp files??
     # if source is a file source
-    # need a better way to actually tell which entries are "the same"
-    # to bookmarks need comparison operators
     def find_or_create(id)
       parsed = @parser.call(id, hosting_section: self)
 
@@ -23,11 +21,8 @@ module Bookmark
     end
 
     def remove(id)
+      @entries = nil
       @source.remove(id)
-    end
-
-    def ==(other)
-      id == other.id && source.input == other.source.input
     end
 
     private

@@ -50,12 +50,8 @@ module Parser
         end
 
         source_type =
-          if options["st"]
-            if Rbp::Container.key?("source.#{options["st"]}")
-              Rbp::Container["source.#{options["st"]}"]
-            else
-              Rbp::Container["source.literal"]
-            end
+          if options["st"] && Rbp::Container.key?("source.#{options["st"]}")
+            Rbp::Container["source.#{options["st"]}"]
           elsif Rbp::Container.key?("operation.rbp") && Rbp::Container["operation.rbp"] && command == "rbp"
             hosting_section&.source.class
           else
@@ -69,7 +65,7 @@ module Parser
 
         operation = get_operation(command, options)
 
-        command = operation.command
+        command = operation&.command
 
         bookmark_type = operation&.bookmark_type || ::Bookmark::Base
 
@@ -79,7 +75,6 @@ module Parser
         bookmark_type.new(
           line, parser, source, hosting_section,
           command: command,
-          input: input,
           operation: operation,
           options: options
         )
@@ -88,8 +83,13 @@ module Parser
       def get_operation(command, options)
         if Rbp::Container.key?("operation.#{command}")
           if Rbp::Container["operation.#{command}"].is_a?(Class)
-            options[:w] = get_operation(options[:w], options.except(:w)) if options[:w]
-            Rbp::Container["operation.#{command}"].new(command, **options)
+            if options[:w]
+              first, rest = options[:w].split(" ", 2)
+              operation = get_operation(first, options.merge(w: rest))
+              Rbp::Container["operation.#{command}"].new(command, w: operation)
+            else
+              Rbp::Container["operation.#{command}"].new(command)
+            end
           else
             Rbp::Container["operation.#{command}"]
           end

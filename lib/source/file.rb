@@ -1,7 +1,8 @@
 module Source
   class File < Base
     def initialize(input, hosting_section: nil, **kwargs)
-      input = ::File.join(hosting_section&.source&.dirname || "", input || "")
+      ext = kwargs[:operation]&.command
+      input = ::File.join(hosting_section&.source&.dirname || "", (input || "") + (ext ? "." + ext : ""))
       @input = Pathname.new(input).cleanpath
     end
 
